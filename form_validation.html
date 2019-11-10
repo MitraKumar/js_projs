@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Form Validation</title>
+  </head>
+  <body>
+    <h2>Form Validation Example</h2>
+    <p>* All fields must be filled</p>
+    <form>
+      <div>
+        <input type="text" id="first-name" placeholder="First Name" />
+      </div>
+      <div>
+        <input type="text" id="middle-name" placeholder="Middle Name" />
+      </div>
+      <div>
+        <input type="text" id="last-name" placeholder="Last Name" />
+      </div>
+      <div>
+        <input type="submit" value="Submit" />
+      </div>
+    </form>
+    <div class="errors"></div>
+    <div class="successful"></div>
+
+    <script>
+      const validate = name => name !== "";
+
+      document.querySelector("form").addEventListener("submit", e => {
+        e.preventDefault();
+
+        const firstName = document.querySelector("#first-name").value;
+        const middleName = document.querySelector("#middle-name").value;
+        const lastName = document.querySelector("#last-name").value;
+
+        const errors = [];
+        if (!validate(firstName)) errors.push("First name must not be empty!");
+        if (!validate(middleName))
+          errors.push("Middle name must not be emplty!");
+        if (!validate(lastName)) errors.push("Last name must not be empty!");
+
+        if (errors.length > 0) {
+          document.querySelector(".errors").innerHTML = errors.join("<br>");
+          document.querySelector(".successful").innerHTML = "";
+        } else {
+          document.querySelector(".errors").innerHTML = "";
+          document.querySelector(
+            ".successful"
+          ).innerHTML = `Name validated successfully: Hello ${firstName} ${middleName} ${lastName}`;
+        }
+
+        document.querySelector("#first-name").value = "";
+        document.querySelector("#middle-name").value = "";
+        document.querySelector("#last-name").value = "";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Form Validation</title>
+  </head>
+  <body>
+    <h2>Email Validation Example</h2>
+    <p>* All fields must be filled</p>
+    <form>
+      <div>
+        <input type="text" id="email" placeholder="Email..." />
+      </div>
+      <div>
+        <input type="text" id="phone_no" placeholder="Phone Number..." />
+      </div>
+      <div>
+        <input type="submit" value="Submit" />
+      </div>
+    </form>
+    <div class="errors"></div>
+    <div class="successful"></div>
+
+    <script>
+      const validateEmail = email =>
+        /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email);
+      const validatePhone = number => /^\d{10}$/.test(number);
+
+      document.querySelector("form").addEventListener("submit", e => {
+        e.preventDefault();
+
+        const email = document.querySelector("#email").value;
+        const phone_no = document.querySelector("#phone_no").value;
+
+        const errors = [];
+        if (!validateEmail(email))
+          errors.push("You should provide a valid email");
+        if (!validatePhone(phone_no))
+          errors.push("You should provide a valid Phone number");
+
+        if (errors.length > 0) {
+          document.querySelector(".errors").innerHTML = errors.join("<br>");
+          document.querySelector(".successful").innerHTML = "";
+        } else {
+          document.querySelector(".errors").innerHTML = "";
+          document.querySelector(
+            ".successful"
+          ).innerHTML = `Your email and phone number is successfully validated.`;
+        }
+
+        document.querySelector("#email").value = "";
+        document.querySelector("#phone_no").value = "";
+      });
+    </script>
+  </body>
+</html>

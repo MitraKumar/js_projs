@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Guess a number</title>
+    <style>
+      .current {
+        background-color: red;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Guess a number <button id="reset">Reset</button></h1>
+
+    <div class="game-modes">
+      <h3>Game modes</h3>
+      <button id="easy">Easy</button>
+      <button id="medium">Medium</button>
+      <button id="hard">Hard</button>
+    </div>
+    <p id="game-info"></p>
+
+    <form class="game">
+      <input
+        type="text"
+        placeholder="Enter your guess"
+        id="guess-input"
+        name="guess-input"
+        autofocus
+        pattern="\d"
+      />
+      <button id="guess">Click Me</button>
+    </form>
+
+    <div id="game-status"></div>
+
+    <script>
+      // State
+      const state = {
+        counter: 0,
+        gameFinished: false,
+        gameModes: {
+          easy: { limit: 10, totalAttempts: 5 },
+          medium: { limit: 20, totalAttempts: 10 },
+          hard: { limit: 25, totalAttempts: 12 }
+        }
+      };
+
+      // Global variables
+      const form = document.querySelector("form");
+      const gameStatus = document.getElementById("game-status");
+      const guessInputRef = form["guess-input"];
+      let prevModeRef = null; // Variable to store previous game mode...
+      let { limit, totalAttempts } = state.gameModes["easy"];
+      let { counter, gameFinished } = state;
+
+      const computeRandomNumber = limit => {
+        const num = Math.floor(Math.random() * limit) + 1;
+        console.log(num);
+        return num;
+      };
+      let randomNumber = computeRandomNumber(limit);
+    </script>
+    <script>
+      // Some utility functions
+      function render(limit, totalAttempts) {
+        document.getElementById("game-info").innerHTML = `
+              You have to choose a number between 1 and ${limit}, and you have ${totalAttempts} attempts to
+            do that.
+          `;
+      }
+      function getTextAccordingToAttemptsLeft(attemptsLeft) {
+        if (attemptsLeft > 0) {
+          return `oops, worng attempt. only ${attemptsLeft} ${
+            attemptsLeft === 1 ? "attempt" : "attempt"
+          } left`;
+        }
+        return `This was your last attempt <br/>Sorry, you have lost...`;
+      }
+      function reset() {
+        const mode = state.gameModes["easy"];
+        limit = mode.limit;
+        totalAttempts = mode.totalAttempts;
+        counter = state.counter;
+        gameFinished = state.gameFinished;
+        if (prevModeRef) {
+          prevModeRef.classList.remove("current");
+        }
+        gameStatus.innerHTML = "";
+        prevModeRef = null;
+        randomNumber = computeRandomNumber(limit);
+      }
+    </script>
+
+    <script>
+      render(limit, totalAttempts);
+
+      document.getElementById("guess").addEventListener("click", e => {
+        e.preventDefault();
+
+        if (gameFinished || guessInputRef.value === "") return;
+
+        counter += 1;
+
+        if (parseInt(guessInputRef.value) === randomNumber) {
+          gameStatus.innerHTML = "Congratulations....correct choice";
+          guessInputRef.value = "";
+          gameFinished = true;
+          return;
+        }
+
+        const attemptsLeft = totalAttempts - counter;
+        gameFinished = attemptsLeft === 0 ? true : false;
+        gameStatus.innerHTML = getTextAccordingToAttemptsLeft(attemptsLeft);
+        guessInputRef.value = "";
+        guessInputRef.focus();
+      });
+
+      // Change Game Mode..
+      document.querySelector(".game-modes").addEventListener("click", e => {
+        if (e.target.id) {
+          if (prevModeRef) {
+            prevModeRef.classList.remove("current");
+          }
+          prevModeRef = e.target;
+          e.target.classList.add("current");
+
+          const mode = state.gameModes[e.target.id];
+          limit = mode.limit;
+          totalAttempts = mode.totalAttempts;
+          randomNumber = computeRandomNumber(limit);
+          render(limit, totalAttempts);
+        }
+      });
+
+      // Reset game
+      document.querySelector("#reset").addEventListener("click", e => {
+        reset();
+        render(limit, totalAttempts);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Prompt, alert, arrays, looping</title>
+  </head>
+  <body>
+    <div>
+      <h2>Prompt Example</h2>
+      <button id="prompt">Get Prompt</button>
+    </div>
+
+    <div>
+      <h2>Alert Example</h2>
+      <button id="alert">Get Alert</button>
+    </div>
+
+    <div>
+      <h2>Looping Example</h2>
+      <p>Your history...</p>
+      <ul id="output-loop"></ul>
+    </div>
+
+    <div>
+      <h2>Array Example</h2>
+      <p>Current history array is</p>
+      <pre id="output-arr"></pre>
+    </div>
+
+    <script>
+      const getDataAsList = history =>
+        history
+          .map(hist =>
+            hist.type === "prompt"
+              ? `<li>You said - ${hist.text}</li>`
+              : `<li>You raise an alert</li>`
+          )
+          .join();
+
+      const history = [];
+      let index = 0;
+
+      function render() {
+        document.querySelector("#output-arr").innerHTML = JSON.stringify(
+          history,
+          null,
+          2
+        );
+        document.querySelector("#output-loop").innerHTML = getDataAsList(
+          history
+        );
+      }
+
+      render();
+
+      document.querySelector("#prompt").addEventListener("click", () => {
+        const answer = prompt("What are your thoughts..");
+        history.push({
+          type: "prompt",
+          text: answer === "" ? "Nothing" : answer
+        });
+        render();
+      });
+
+      document.querySelector("#alert").addEventListener("click", () => {
+        alert("You raised an alarm");
+        history.push({ type: "alert", text: "" });
+        render();
+      });
+    </script>
+  </body>
+</html>

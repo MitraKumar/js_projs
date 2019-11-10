@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Guess a number</title>
+  </head>
+  <body>
+    <h1>Guess a number</h1>
+    <p id="game-info"></p>
+
+    <form class="game">
+      <input
+        type="text"
+        placeholder="Enter your guess"
+        id="guess-input"
+        name="guess-input"
+        autofocus
+        pattern="\d"
+      />
+      <button id="guess">Click Me</button>
+    </form>
+
+    <div id="game-status"></div>
+
+    <script>
+      function render(limit, totalAttempts) {
+        document.getElementById("game-info").innerHTML = `
+            You have to choose a number between 1 and ${limit}, and you have ${totalAttempts} attempts to
+          do that.
+        `;
+      }
+      function getTextAccordingToAttemptsLeft(attemptsLeft) {
+        if (attemptsLeft > 0) {
+          return `oops, worng attempt. only ${attemptsLeft} ${
+            attemptsLeft === 1 ? "attempt" : "attempt"
+          } left`;
+        }
+        return `This was your last attempt <br/>Sorry, you have lost...`;
+      }
+    </script>
+
+    <script>
+      const state = {
+        counter: 0,
+        gameFinished: false,
+        limit: 10,
+        totalAttempts: 5
+      };
+    </script>
+
+    <script>
+      const form = document.querySelector("form");
+      const gameStatus = document.getElementById("game-status");
+      const guessInputRef = form["guess-input"];
+
+      let { counter, gameFinished, limit, totalAttempts } = state;
+
+      render(limit, totalAttempts);
+
+      const randomNumber = Math.floor(Math.random() * limit) + 1;
+      console.log({ randomNumber });
+
+      form.addEventListener("submit", e => {
+        e.preventDefault();
+
+        if (gameFinished || guessInputRef.value === "") return;
+
+        counter += 1;
+
+        if (parseInt(guessInputRef.value) === randomNumber) {
+          gameStatus.innerHTML = "Congratulations....correct choice";
+          guessInputRef.value = "";
+          gameFinished = true;
+          return;
+        }
+
+        const attemptsLeft = totalAttempts - counter;
+        gameFinished = attemptsLeft === 0 ? true : false;
+        gameStatus.innerHTML = getTextAccordingToAttemptsLeft(attemptsLeft);
+        guessInputRef.value = "";
+        guessInputRef.focus();
+      });
+    </script>
+  </body>
+</html>
